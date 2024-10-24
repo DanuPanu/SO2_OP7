@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model keskustelu {
+  id          Int       @id @default(autoincrement())
+  otsikko     String    @db.Text
+  sisalto     String    @db.Text
+  kirjoittaja String    @db.Text
+  aikaleima   DateTime  @default(now())
+  viestit     viestit[]
+}
+
+model viestit {
+  id           Int        @id @default(autoincrement())
+  viesti       String     @db.Text
+  nimi         String     @db.Text
+  keskusteluid Int
+  keskustelu   keskustelu @relation(fields: [keskusteluid], references: [id], onUpdate: Restrict, map: "viestit_ibfk_1")
+
+  @@index([keskusteluid], map: "keskusteluid")
+}
